@@ -1,0 +1,514 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  
+  <title>interfaces | Never&#39;s Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  
+    <meta name="author" content="Never">
+  
+  
+    <meta name="description" content="There are a number of situations in software engineering when it is important for disparate groups of programmers to agree to a “contract” that spells out how their software interacts. Each group shou">
+  
+  <meta content="article" property="og:type">
+<meta content="interfaces" property="og:title">
+<meta content="http://yoursite.com/2014/05/11/interfaces/" property="og:url">
+<meta property="og:image">
+<meta content="Never's Blog" property="og:site_name">
+<meta content="There are a number of situations in software engineering when it is important for disparate groups of programmers to agree to a “contract” that spells out how their software interacts. Each group shou" property="og:description">
+<meta content="summary" name="twitter:card">
+  
+  
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+</head>
+
+<body>
+  <div class="wrapper">
+    <header id="header">
+  <div class="title">
+    <h1><a href="/">Never&#39;s Blog</a></h1>
+    <p><a href="/"></a></p>
+  </div>
+  <nav class="nav">
+    <ul>
+      
+        <li><a href="/">Home</a></li>
+      
+        <li><a href="/archives">Archives</a></li>
+      
+        <li><a href="/reading">Reading</a></li>
+      
+        <li><a href="/about">About</a></li>
+      
+      
+    </ul>
+    <div class="clearfix"></div>
+  </nav>
+  <div class="clearfix"></div>
+</header>
+    <div class="content"><article class="post">
+  <header>
+    
+      <div class="icon"></div>
+      <a href="/2014/05/11/interfaces/">
+  <time datetime="2014-05-11T02:23:14.000Z">
+    May 11 2014
+  </time>
+</a>
+    
+    
+  
+    <h1 class="title">interfaces</h1>
+  
+
+  </header>
+  
+  <div class="entry">
+    
+      <p>There are a number of situations in software engineering when it is important for disparate groups of programmers to agree to a “contract” that spells out how their software interacts. Each group should be able to write their code without any knowledge of how the other group’s code is written. Generally speaking, interfaces are such contracts.</p>
+<a id="more"></a>
+
+<h2 id="Interfaces_in_Java">Interfaces in Java</h2>
+<p>In the Java programming language, an interface is a reference type, similar to a class, that can contain <strong>only constants, method signatures, default methods, static methods, and nested types. Method bodies exist only for default methods and static methods</strong>. Interfaces cannot be instantiated—they can only be implemented by classes or extended by other interfaces.Defining an interface is similar to creating a new class:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+8
+</pre></td><td class="code"><pre><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Animal</span> {</span>
+	<span class="comment">// constant declarations, if any</span>
+	<span class="comment">// method signatures</span>
+	<span class="keyword">void</span> display();
+	<span class="keyword">void</span> information();
+	<span class="comment">// default methods or static methods</span>
+	<span class="comment">// nested types</span>
+}
+</pre></td></tr></table></figure>
+
+<p>Note that the method signatures have no braces and are terminated with a semicolon.To use an interface, you write a class that implements the interface. When an instantiable class implements an interface, it provides a method body for each of the methods declared in the interface. For example:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+8
+</pre></td><td class="code"><pre><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Cat</span> <span class="keyword">implements</span> <span class="title">Animal</span> {</span>
+	<span class="keyword">public</span> <span class="keyword">void</span> <span class="title">display</span>(){
+		System.out.println(<span class="string">"I am a cat!"</span>);
+	}
+	<span class="keyword">public</span>  <span class="title">information</span>(){
+		System.out.println(<span class="string">"My name is lala"</span>);
+	}
+}
+</pre></td></tr></table></figure>
+
+<h2 id="Implementing_an_Interface">Implementing an Interface</h2>
+<p>To declare a class that implements an interface, you include an implements clause in the class declaration. Your class can implement more than one interface, so the implements keyword is followed by a comma-separated list of the interfaces implemented by the class. By convention, the implements clause follows the extends clause, if there is one.</p>
+<h4 id="A_Sample_Interface,_Relatable">A Sample Interface, Relatable</h4>
+<figure class="highlight java"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+8
+</pre></td><td class="code"><pre><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Relatable</span> {</span>
+	<span class="comment">// this (object calling isLargerThan)</span>
+	<span class="comment">// and other must be instances of </span>
+	<span class="comment">// the same class returns 1, 0, -1 </span>
+	<span class="comment">// if this is greater than, </span>
+	<span class="comment">// equal to, or less than other</span>
+	<span class="keyword">public</span> <span class="keyword">int</span> <span class="title">isLargerThan</span>(Relatable other);
+}
+</pre></td></tr></table></figure>
+
+<p>If you want to be able to compare the size of similar objects, no matter what they are, the class that instantiates them should implement Relatable.<br>If you know that a class implements Relatable, then you know that you can compare the size of the objects instantiated from that class.</p>
+<h4 id="Implementing_the_Relatable_Interface">Implementing the Relatable Interface</h4>
+<p>Here is the Student class written to implement Relatable.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+</pre></td><td class="code"><pre><span class="keyword">public</span> calss Student implements Relatable {
+	<span class="keyword">private</span> String sName;
+	<span class="keyword">private</span> <span class="keyword">int</span> sAge;
+	<span class="keyword">private</span> String sSex;
+	
+	<span class="keyword">public</span> <span class="title">Student</span>(String sName, <span class="keyword">int</span> sAge, String sSex){
+		<span class="keyword">this</span>.sName = sName;
+		<span class="keyword">this</span>.sAge = sAge;
+		<span class="keyword">this</span>.sSex = sSex;
+	}
+	<span class="keyword">public</span> <span class="title">getAge</span>(){
+		<span class="keyword">return</span> sAge;
+	}
+	<span class="comment">// a method required to implement the Relatable interface</span>
+	<span class="keyword">public</span> <span class="keyword">int</span> <span class="title">isLargerThan</span>(Relatable student){
+		Student otherStudent = (Student)student;
+		<span class="keyword">if</span> (<span class="keyword">this</span>.getAge() &lt; otherStudent.getAge())
+			<span class="keyword">return</span> -<span class="number">1</span>;
+		<span class="keyword">else</span> <span class="keyword">if</span> (<span class="keyword">this</span>.getAge() &gt; otherStudent.getAge())
+			<span class="keyword">return</span> <span class="number">1</span>;
+		<span class="keyword">else</span>
+			<span class="keyword">return</span> <span class="number">0</span>;	
+	}
+}
+</pre></td></tr></table></figure>
+
+<p>Because RectanglePlus implements Relatable, the age of any two Student objects can be compared.<br>Note: The isLargerThan method, as defined in the Relatable interface, takes an object of type Relatable. The line of code”Student otherStudent = (Student)student” shown in the previous example, casts other to a Student instance. Type casting tells the compiler what the object really is. Invoking getAge directly on the other instance (other.getAge()) would fail to compile because the compiler does not understand that other is actually an instance of Student. </p>
+<h2 id="Using_an_Interface_as_a_Type">Using an Interface as a Type</h2>
+<p>When you define a new interface, you are defining a new reference data type. You can use interface names anywhere you can use any other data type name. If you define a reference variable whose type is an interface, any object you assign to it must be an instance of a class that implements the interface.</p>
+<h2 id="Evolving_Interfaces">Evolving Interfaces</h2>
+<p>Consider an interface that you have developed called DoIt:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+</pre></td><td class="code"><pre><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">DoIt</span> {</span>
+	<span class="keyword">void</span> doSomething(<span class="keyword">int</span> i, <span class="keyword">double</span> x);
+	<span class="keyword">int</span> doSomethingElse(String s);
+}
+</pre></td></tr></table></figure>
+
+<p>Suppose that, at a later time, you want to add a third method to DoIt, so that the interface now becomes:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+</pre></td><td class="code"><pre><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">DoIt</span> {</span>
+	<span class="keyword">void</span> doSomething(<span class="keyword">int</span> i, <span class="keyword">double</span> x);
+	<span class="keyword">int</span> doSomethingElse(String s);
+	<span class="keyword">boolean</span> didItWork(<span class="keyword">int</span> i, <span class="keyword">double</span> x, String s);
+}
+</pre></td></tr></table></figure>
+
+<p>If you make this change, then all classes that implement the old DoIt interface will break because they no longer implement the old interface. Programmers relying on this interface will protest loudly.</p>
+<p>Try to anticipate all uses for your interface and specify it completely from the beginning. If you want to add additional methods to an interface, you have several options. You could create a DoItPlus interface that extends DoIt:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre>1
+2
+3
+</pre></td><td class="code"><pre><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">DoItPlus</span> <span class="keyword">extends</span> <span class="title">DoIt</span> {</span>
+	<span class="keyword">boolean</span> didItWork(<span class="keyword">int</span> i, <span class="keyword">double</span> x, String s);
+}
+</pre></td></tr></table></figure>
+
+<p>Now users of your code can choose to continue to use the old interface or to upgrade to the new interface.</p>
+<p>Alternatively, you can define your new methods as <strong>default methods</strong>. The following example defines a default method named didItWork:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+</pre></td><td class="code"><pre><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">DoIt</span> {</span>
+	<span class="keyword">void</span> doSomething(<span class="keyword">int</span> i, <span class="keyword">double</span> x);
+	<span class="keyword">int</span> doSomethingElse(String s);
+	<span class="keyword">default</span> <span class="keyword">boolean</span> didItWork(<span class="keyword">int</span> i, <span class="keyword">double</span> x, String s) {
+		<span class="comment">// Method body </span>
+	}
+}
+</pre></td></tr></table></figure>
+
+<p>Note that you must provide an implementation for default methods. You could also define new static methods to existing interfaces. Users who have classes that implement interfaces enhanced with new default or static methods do not have to modify or recompile them to accommodate the additional methods.</p>
+<h2 id="Default_Methods">Default Methods</h2>
+<p>Default methods enable you to add new functionality to the interfaces of your libraries and ensure binary compatibility with code written for older versions of those interfaces.<br>Consider the following interface of TimeClient</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+</pre></td><td class="code"><pre><span class="keyword">import</span> java.time.*; 
+<span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">TimeClient</span> {</span>
+	<span class="keyword">void</span> setTime(<span class="keyword">int</span> hour, <span class="keyword">int</span> minute, <span class="keyword">int</span> second);
+	<span class="keyword">void</span> setDate(<span class="keyword">int</span> day, <span class="keyword">int</span> month, <span class="keyword">int</span> year);
+	<span class="keyword">void</span> setDateAndTime(<span class="keyword">int</span> day, <span class="keyword">int</span> month, <span class="keyword">int</span> year, <span class="keyword">int</span> hour, <span class="keyword">int</span> minute, <span class="keyword">int</span> second);
+	LocalDateTime getLocalDateTime();
+}
+</pre></td></tr></table></figure>
+
+<p>The following class of SimpleTimeClient implements TimeClient:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+</pre></td><td class="code"><pre><span class="keyword">import</span> java.time.*;
+<span class="keyword">import</span> java.lang.*;
+<span class="keyword">import</span> java.util.*;
+
+<span class="keyword">public</span> calss SimpleTimeClient implements TimeClient {
+	<span class="keyword">private</span> LocalDateTime dateAndTime;
+	<span class="keyword">public</span> <span class="title">SimpleTimeClient</span>() {
+		dateAndTime = LocalDateTime.now();
+	}
+	<span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setTime</span>(<span class="keyword">int</span> hour, <span class="keyword">int</span> minute, <span class="keyword">int</span> second) {
+		LocalDate currentDate = LocalDate.from(dateAndTime);
+		LocalTime timeToSet = LocalTime.of(hour, minute, second);
+		dateAndTime = LocalDateTime.of(currentDate, timeToSet);
+	}
+	<span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setDate</span>(<span class="keyword">int</span> day, <span class="keyword">int</span> month, <span class="keyword">int</span> year) {
+		LocalDate dateToSet = LocalDate.of(day, month, year);
+		LocalTime currentTime = LocalTime.from(dateAndTime);
+		dateAndTime = LocalDateTime.of(dateToSet, currentTime);
+	}
+	<span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setDateAndTime</span>(<span class="keyword">int</span> day, <span class="keyword">int</span> month, <span class="keyword">int</span> year,<span class="keyword">int</span> hour, <span class="keyword">int</span> minute, <span class="keyword">int</span> second) {
+		LocalDate dateToSet = LocalDate.of(day, month, year);
+		LocalTime timeToSet = LocalTime.of(hour, minute, second); 
+		dateAndTime = LocalDateTime.of(dateToSet, timeToSet);
+	}
+	<span class="keyword">public</span> LocalDateTime <span class="title">getLocalDateTime</span>() {
+		<span class="keyword">return</span> dateAndTime;
+	}
+	<span class="keyword">public</span> String <span class="title">toString</span>() {
+		<span class="keyword">return</span> dateAndTime.toString();
+	}
+	<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span>(String... args) {
+		TimeClient myTimeClient = <span class="keyword">new</span> SimpleTimeClient();
+		System.out.println(myTimeClient.toString());
+	}
+}
+</pre></td></tr></table></figure>
+
+<p>Suppose that you want to add new functionality to the TimeClient interface, such as the ability to specify a time zone through a ZonedDateTime object (which is like a LocalDateTime object except that it stores time zone information):</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+</pre></td><td class="code"><pre><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">TimeClient</span> {</span>
+	<span class="keyword">void</span> setTime(<span class="keyword">int</span> hour, <span class="keyword">int</span> minute, <span class="keyword">int</span> second);
+	<span class="keyword">void</span> setDate(<span class="keyword">int</span> day, <span class="keyword">int</span> month, <span class="keyword">int</span> year);
+	<span class="keyword">void</span> setDateAndTime(<span class="keyword">int</span> day, <span class="keyword">int</span> month, <span class="keyword">int</span> year, <span class="keyword">int</span> hour, <span class="keyword">int</span> minute, <span class="keyword">int</span> second);
+	LocalDateTime getLocalDateTime();
+	ZonedDateTime getZonedDateTime(String zoneString);
+}
+</pre></td></tr></table></figure>
+
+<p>Following this modification to the TimeClient interface, you would also have to modify the class SimpleTimeClient and implement the method getZonedDateTime. However, rather than leaving getZonedDateTime as abstract (as in the previous example), you can instead define a default implementation. Remember that an abstract method is a method declared without an implementation.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+</pre></td><td class="code"><pre><span class="keyword">import</span> java.time.*;
+<span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">TimeClient</span> {</span>
+	<span class="keyword">void</span> setTime(<span class="keyword">int</span> hour, <span class="keyword">int</span> minute, <span class="keyword">int</span> second);
+	<span class="keyword">void</span> setDate(<span class="keyword">int</span> day, <span class="keyword">int</span> month, <span class="keyword">int</span> year);
+	<span class="keyword">void</span> setDateAndTime(<span class="keyword">int</span> day, <span class="keyword">int</span> month, <span class="keyword">int</span> year, <span class="keyword">int</span> hour, <span class="keyword">int</span> minute, <span class="keyword">int</span> second);
+	<span class="keyword">default</span> ZonedDateTime getZonedDateTime(String zoneString) {
+		<span class="keyword">return</span> ZonedDateTime.of(getLocalDateTime(), getZoneId(zoneString));
+	}
+	<span class="keyword">static</span> ZoneId getZoneId (String zoneString) {
+		<span class="keyword">try</span> {
+			<span class="keyword">return</span> ZoneId.of(zoneString);
+		} <span class="keyword">catch</span> (DateTimeException e) {
+			System.err.println(<span class="string">"Invalid time zone: "</span> + zoneString + <span class="string">"; using default time zone instead."</span>);
+		<span class="keyword">return</span> ZoneId.systemDefault();
+		}
+	}
+}
+</pre></td></tr></table></figure>
+
+<p>You specify that a method definition in an interface is a default method with the default keyword at the beginning of the method signature. All method declarations in an interface, including default methods, are implicitly public, so you can omit the public modifier.With this interface, you do not have to modify the class SimpleTimeClient, and this class (and any class that implements the interface TimeClient), will have the method getZonedDateTime already defined. </p>
+<h4 id="Extending_Interfaces_That_Contain_Default_Methods">Extending Interfaces That Contain Default Methods</h4>
+<p>When you extend an interface that contains a default method, you can do the following:</p>
+<ul>
+<li>Not mention the default method at all, which lets your extended interface inherit the default method.</li>
+<li>Redeclare the default method, which makes it abstract.</li>
+<li>Redefine the default method, which overrides it.</li>
+</ul>
+<h2 id="Static_Methods">Static Methods</h2>
+<p>In addition to default methods, you can define static methods in interfaces. (A static method is a method that is associated with the class in which it is defined rather than with any object. Every instance of the class shares its static methods.) This makes it easier for you to organize helper methods in your libraries; you can keep static methods specific to an interface in the same interface rather than in a separate class. The following example defines a static method that retrieves a ZoneId object corresponding to a time zone identifier; it uses the system default time zone if there is no ZoneId object corresponding to the given identifier. (As a result, you can simplify the method getZonedDateTime):</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+</pre></td><td class="code"><pre><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">TimeClient</span> {</span>
+	<span class="comment">// ...</span>
+	<span class="keyword">static</span> <span class="keyword">public</span> ZoneId <span class="title">getZoneId</span> (String zoneString) {
+		<span class="keyword">try</span> {
+			<span class="keyword">return</span> ZoneId.of(zoneString);
+		} <span class="keyword">catch</span> (DateTimeException e) {
+			System.err.println(<span class="string">"Invalid time zone: "</span> + zoneString + <span class="string">"; using default time zone instead."</span>);
+			<span class="keyword">return</span> ZoneId.systemDefault();
+		}
+	}
+	<span class="keyword">default</span> <span class="keyword">public</span> ZonedDateTime <span class="title">getZonedDateTime</span>(String zoneString) {
+		<span class="keyword">return</span> ZonedDateTime.of(getLocalDateTime(), getZoneId(zoneString));
+	}    
+}
+</pre></td></tr></table></figure>
+
+<p>Like static methods in classes, you specify that a method definition in an interface is a static method with the static keyword at the beginning of the method signature. All method declarations in an interface, including static methods, are implicitly public, so you can omit the public modifier.</p>
+
+    
+  </div>
+  <footer>
+    
+      
+  <div class="categories">
+    <a class="categories-link" href="/categories/Java/">Java</a>
+  </div>
+
+      
+  <div class="tags">
+    <a class="tags-link" href="/tags/Java, interface/">Java, interface</a>
+  </div>
+
+    
+    <div class="clearfix"></div>
+  </footer>
+</article>
+
+
+<section id="comment">
+  <h1 class="title">Comments</h1>
+  <div class="ds-thread" data-title="interfaces">
+  </div>
+  <script type="text/javascript">
+	var duoshuoQuery = {short_name:"neverc"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+
+</section>
+
+</div>
+  </div>
+  <footer id="footer"><div class="copyright">
+  
+  &copy; 2014 <a href="/">Never</a>
+  
+</div>
+<div class="theme-copyright">
+  Theme by <a href="https://github.com/orderedlist" target="_blank">orderedlist</a>
+   | 
+  Redesign by <a href="http://heroicyang.com/" target="_blank">Heroic Yang</a>
+</div>
+<div class="clearfix"></div></footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8/jquery.min.js"></script>
+<script src="/js/scale.fix.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+<script type="text/javascript">
+  var duoshuoQuery = { short_name: 'neverc' };
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';
+    ds.async = true;
+    ds.src = 'http://static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script>
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+  (function($){
+    $('.fancybox').fancybox();
+  })(jQuery);
+</script>
+
+</body>
+</html>

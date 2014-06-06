@@ -1,0 +1,466 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  
+  <title>Decorator Pattern | Never&#39;s Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  
+    <meta name="author" content="Never">
+  
+  
+    <meta name="description" content="修饰模式，是面向对象编程领域中，一种动态地往一个类中添加新的行为的设计模式。就功能而言，修饰模式相比生成子类更为灵活，这样可以给某个对象而不是整个类添加一些功能。装饰者模式动态的将责任附加到对象上，若要扩展对象，装饰者模式提供了比继承更有弹性的替代方案。">
+  
+  <meta content="article" property="og:type">
+<meta content="Decorator Pattern" property="og:title">
+<meta content="http://yoursite.com/2014/05/15/decorator-pattern/" property="og:url">
+<meta content="http://never-blog.qiniudn.com/2014_05_6.png" property="og:image">
+<meta content="Never's Blog" property="og:site_name">
+<meta content="修饰模式，是面向对象编程领域中，一种动态地往一个类中添加新的行为的设计模式。就功能而言，修饰模式相比生成子类更为灵活，这样可以给某个对象而不是整个类添加一些功能。装饰者模式动态的将责任附加到对象上，若要扩展对象，装饰者模式提供了比继承更有弹性的替代方案。" property="og:description">
+<meta content="summary" name="twitter:card">
+  
+  
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+</head>
+
+<body>
+  <div class="wrapper">
+    <header id="header">
+  <div class="title">
+    <h1><a href="/">Never&#39;s Blog</a></h1>
+    <p><a href="/"></a></p>
+  </div>
+  <nav class="nav">
+    <ul>
+      
+        <li><a href="/">Home</a></li>
+      
+        <li><a href="/archives">Archives</a></li>
+      
+        <li><a href="/reading">Reading</a></li>
+      
+        <li><a href="/about">About</a></li>
+      
+      
+    </ul>
+    <div class="clearfix"></div>
+  </nav>
+  <div class="clearfix"></div>
+</header>
+    <div class="content"><article class="post">
+  <header>
+    
+      <div class="icon"></div>
+      <a href="/2014/05/15/decorator-pattern/">
+  <time datetime="2014-05-15T04:24:42.000Z">
+    May 15 2014
+  </time>
+</a>
+    
+    
+  
+    <h1 class="title">Decorator Pattern</h1>
+  
+
+  </header>
+  
+  <div class="entry">
+    
+      <p>修饰模式，是面向对象编程领域中，一种动态地往一个类中添加新的行为的设计模式。就功能而言，修饰模式相比生成子类更为灵活，这样可以给某个对象而不是整个类添加一些功能。装饰者模式动态的将责任附加到对象上，若要扩展对象，装饰者模式提供了比继承更有弹性的替代方案。</p>
+<a id="more"></a>
+
+<h2 id="装饰者模式定义">装饰者模式定义</h2>
+<blockquote>
+<p>In object-oriented programming, the decorator pattern (also known as Wrapper, an alternative naming shared with the Adapter pattern) is a design pattern that allows behavior to be added to an individual object, either statically or dynamically, without affecting the behavior of other objects from the same class. —wiki</p>
+</blockquote>
+<h2 id="装饰者模式类图">装饰者模式类图</h2>
+<p><img src="http://never-blog.qiniudn.com/2014_05_6.png" alt=""></p>
+<ol>
+<li>ConcreteComponent是我们将(包装一个)组件,也就是要动态地加上新行为的对说,装饰者有一个实例变象,它扩展自Component。</li>
+<li>每个装饰者都“有一个”(包装一个)组件,也就是说,装饰者有一个实例变量以保存某个Component的引用。</li>
+<li>Decorator是装饰者共同实现的接口（也可以是抽象类）</li>
+<li>ConcreteDecoratort有一个实例变量，可以记录所装饰的事物（装饰者包着Component）</li>
+<li>装饰者可以扩展Component的状态。</li>
+<li>装饰者可以加上新的方法。新行为是通过在旧行为前面或后面做一些计算来添加的。</li>
+</ol>
+<h2 id="咖啡与调料的示例代码（来自Head_First设计模式）">咖啡与调料的示例代码（来自Head First设计模式）</h2>
+<p>在购买咖啡时，可以在咖啡中加入各种调料，例如：蒸奶（Steamed Milk）、豆浆（Soy）、摩卡（Mocha）或覆盖奶泡。咖啡店会根据所加入的调料收取不同的费用，所以咖啡店订单系统必须考虑到这些调料部分。<br><img src="http://never-blog.qiniudn.com/2014_05_7.jpg" alt=""></p>
+<h2 id="示例代码">示例代码</h2>
+<p>先从Beverage类下手，所有类的基类，Beverage是一个抽象类，其实很大程度是是子类继承了Beverage的类型，而不是方法。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+</pre></td><td class="code"><pre><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">Beverage</span> {</span>
+	String description = <span class="string">"Unknown Beverage"</span>;
+  
+	<span class="keyword">public</span> String <span class="title">getDescription</span>() {
+		<span class="keyword">return</span> description;
+	}
+ 
+	<span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">double</span> <span class="title">cost</span>();
+}
+</pre></td></tr></table></figure>
+
+<p>Beverage很简单。接下来实现Condiment(调料)抽象类,也就是装饰者类吧,为了使CondimentDecorator能够取代Beverage,所以CondimentDecorator继承了Beverage类。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre>1
+2
+3
+</pre></td><td class="code"><pre><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">CondimentDecorator</span> <span class="keyword">extends</span> <span class="title">Beverage</span> {</span>
+	<span class="keyword">public</span> <span class="keyword">abstract</span> String <span class="title">getDescription</span>();
+}
+</pre></td></tr></table></figure>
+
+<p>现在,已经有了基类,让我们开始开始实现一些饮料吧!先从浓缩咖啡(Espresso)开始。别忘了,我们需要为具体的饮料设置描述,而且还<br>必须实现cost()方法。首先,让EsEspresso继承Beverage类，为了要设置饮料的描述,我们写了一个构造器。记住,description实例变量继承自Beverage。最后实现cost方法。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+</pre></td><td class="code"><pre><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Espresso</span> <span class="keyword">extends</span> <span class="title">Beverage</span> {</span>
+  
+	<span class="keyword">public</span> <span class="title">Espresso</span>() {
+		description = <span class="string">"Espresso"</span>;
+	}
+  
+	<span class="keyword">public</span> <span class="keyword">double</span> <span class="title">cost</span>() {
+		<span class="keyword">return</span> <span class="number">1.99</span>;
+	}
+}
+</pre></td></tr></table></figure>
+
+<p>DarkRoast、Decaf、HouseBlend类的实现与Espresso类似，不多解释，下面是详细代码。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+</pre></td><td class="code"><pre><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DarkRoast</span> <span class="keyword">extends</span> <span class="title">Beverage</span> {</span>
+	<span class="keyword">public</span> <span class="title">DarkRoast</span>() {
+		description = <span class="string">"Dark Roast Coffee"</span>;
+	}
+ 
+	<span class="keyword">public</span> <span class="keyword">double</span> <span class="title">cost</span>() {
+		<span class="keyword">return</span> <span class="number">.99</span>;
+	}
+}
+</pre></td></tr></table></figure>
+
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+</pre></td><td class="code"><pre><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HouseBlend</span> <span class="keyword">extends</span> <span class="title">Beverage</span> {</span>
+	<span class="keyword">public</span> <span class="title">HouseBlend</span>() {
+		description = <span class="string">"House Blend Coffee"</span>;
+	}
+ 
+	<span class="keyword">public</span> <span class="keyword">double</span> <span class="title">cost</span>() {
+		<span class="keyword">return</span> <span class="number">.89</span>;
+	}
+}
+</pre></td></tr></table></figure>
+
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+</pre></td><td class="code"><pre><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Decaf</span> <span class="keyword">extends</span> <span class="title">Beverage</span> {</span>
+	<span class="keyword">public</span> <span class="title">Decaf</span>() {
+		description = <span class="string">"Decaf Coffee"</span>;
+	}
+ 
+	<span class="keyword">public</span> <span class="keyword">double</span> <span class="title">cost</span>() {
+		<span class="keyword">return</span> <span class="number">1.05</span>;
+	}
+}
+</pre></td></tr></table></figure>
+
+<p>如果你回头去看看装饰者模式的类图,将发现我们已经完成了抽象组件(Beverage),有了具体组件(HouseBlend),也有了抽象装饰者(CondimentDecorator)。现在,我们就来实现具体装饰者。先从摩卡下手:摩卡是一个装饰者,所以让它扩展CondimentDecorator，为了使Mocha能够引用一个Beverage，需要使用一个实例变量来记录饮料，也就是被装饰者。将被装饰者当作构造函数的参数，再有构造函数负责记录在实例变量中。在计算Mocha饮料的价钱时，首先委托给被装饰者计算价钱，然后在加上Mocha的价钱，最后得出结果。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+</pre></td><td class="code"><pre><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Mocha</span> <span class="keyword">extends</span> <span class="title">CondimentDecorator</span> {</span>
+	Beverage beverage;
+ 
+	<span class="keyword">public</span> <span class="title">Mocha</span>(Beverage beverage) {
+		<span class="keyword">this</span>.beverage = beverage;
+	}
+ 
+	<span class="keyword">public</span> String <span class="title">getDescription</span>() {
+		<span class="keyword">return</span> beverage.getDescription() + <span class="string">", Mocha"</span>;
+	}
+ 
+	<span class="keyword">public</span> <span class="keyword">double</span> <span class="title">cost</span>() {
+		<span class="keyword">return</span> <span class="number">.20</span> + beverage.cost();
+	}
+}
+</pre></td></tr></table></figure>
+
+<p>Milk、Soy、Whip类的实现与Mocha类似，不多解释，下面是详细代码。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+</pre></td><td class="code"><pre><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Milk</span> <span class="keyword">extends</span> <span class="title">CondimentDecorator</span> {</span>
+	Beverage beverage;
+
+	<span class="keyword">public</span> <span class="title">Milk</span>(Beverage beverage) {
+		<span class="keyword">this</span>.beverage = beverage;
+	}
+
+	<span class="keyword">public</span> String <span class="title">getDescription</span>() {
+		<span class="keyword">return</span> beverage.getDescription() + <span class="string">", Milk"</span>;
+	}
+
+	<span class="keyword">public</span> <span class="keyword">double</span> <span class="title">cost</span>() {
+		<span class="keyword">return</span> <span class="number">.10</span> + beverage.cost();
+	}
+}
+</pre></td></tr></table></figure>
+
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+</pre></td><td class="code"><pre><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Soy</span> <span class="keyword">extends</span> <span class="title">CondimentDecorator</span> {</span>
+	Beverage beverage;
+
+	<span class="keyword">public</span> <span class="title">Soy</span>(Beverage beverage) {
+		<span class="keyword">this</span>.beverage = beverage;
+	}
+
+	<span class="keyword">public</span> String <span class="title">getDescription</span>() {
+		<span class="keyword">return</span> beverage.getDescription() + <span class="string">", Soy"</span>;
+	}
+
+	<span class="keyword">public</span> <span class="keyword">double</span> <span class="title">cost</span>() {
+		<span class="keyword">return</span> <span class="number">.15</span> + beverage.cost();
+	}
+}
+</pre></td></tr></table></figure>
+
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+</pre></td><td class="code"><pre><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Whip</span> <span class="keyword">extends</span> <span class="title">CondimentDecorator</span> {</span>
+	Beverage beverage;
+ 
+	<span class="keyword">public</span> <span class="title">Whip</span>(Beverage beverage) {
+		<span class="keyword">this</span>.beverage = beverage;
+	}
+ 
+	<span class="keyword">public</span> String <span class="title">getDescription</span>() {
+		<span class="keyword">return</span> beverage.getDescription() + <span class="string">", Whip"</span>;
+	}
+ 
+	<span class="keyword">public</span> <span class="keyword">double</span> <span class="title">cost</span>() {
+		<span class="keyword">return</span> <span class="number">.10</span> + beverage.cost();
+	}
+}
+</pre></td></tr></table></figure>
+
+<p>最后是测试类的代码</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+</pre></td><td class="code"><pre><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">StarbuzzCoffee</span> {</span>
+ 
+	<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span>(String args[]) {
+		Beverage beverage = <span class="keyword">new</span> Espresso();
+		System.out.println(beverage.getDescription() + <span class="string">" $"</span> + beverage.cost());
+ 
+		Beverage beverage2 = <span class="keyword">new</span> DarkRoast();
+		beverage2 = <span class="keyword">new</span> Mocha(beverage2);
+		beverage2 = <span class="keyword">new</span> Mocha(beverage2);
+		beverage2 = <span class="keyword">new</span> Whip(beverage2);
+		System.out.println(beverage2.getDescription() + <span class="string">" $"</span> + beverage2.cost());
+ 
+		Beverage beverage3 = <span class="keyword">new</span> HouseBlend();
+		beverage3 = <span class="keyword">new</span> Soy(beverage3);
+		beverage3 = <span class="keyword">new</span> Mocha(beverage3);
+		beverage3 = <span class="keyword">new</span> Whip(beverage3);
+		System.out.println(beverage3.getDescription() + <span class="string">" $"</span> + beverage3.cost());
+	}
+}
+</pre></td></tr></table></figure>
+
+<h2 id="总结">总结</h2>
+<p>相对来说，装饰者模式还是很难懂的，而且应用场景不明显，还需要好好理解理解。最后paste了个问题，希望可以讨论下：<br><strong>我们在星巴兹的朋友决定开始在菜单上加上咖啡的容量大小,供顾客可以选择小杯(tall)、中杯(grande)、大杯(venti)。星巴兹认为这是任何咖啡都必须具备的,所以在Beverage类中加上了getSize()与setSize()。他们也希望调料根据咖啡容量收费,例如:小中大杯的咖啡加上豆浆,分别加收0.10、0.15、0.20美金</strong>。</p>
+
+    
+  </div>
+  <footer>
+    
+      
+  <div class="categories">
+    <a class="categories-link" href="/categories/Design Pattern/">Design Pattern</a>
+  </div>
+
+      
+  <div class="tags">
+    <a class="tags-link" href="/tags/Decorator Pattern/">Decorator Pattern</a>
+  </div>
+
+    
+    <div class="clearfix"></div>
+  </footer>
+</article>
+
+
+<section id="comment">
+  <h1 class="title">Comments</h1>
+  <div class="ds-thread" data-title="Decorator Pattern">
+  </div>
+  <script type="text/javascript">
+	var duoshuoQuery = {short_name:"neverc"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+
+</section>
+
+</div>
+  </div>
+  <footer id="footer"><div class="copyright">
+  
+  &copy; 2014 <a href="/">Never</a>
+  
+</div>
+<div class="theme-copyright">
+  Theme by <a href="https://github.com/orderedlist" target="_blank">orderedlist</a>
+   | 
+  Redesign by <a href="http://heroicyang.com/" target="_blank">Heroic Yang</a>
+</div>
+<div class="clearfix"></div></footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8/jquery.min.js"></script>
+<script src="/js/scale.fix.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+<script type="text/javascript">
+  var duoshuoQuery = { short_name: 'neverc' };
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';
+    ds.async = true;
+    ds.src = 'http://static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script>
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+  (function($){
+    $('.fancybox').fancybox();
+  })(jQuery);
+</script>
+
+</body>
+</html>
